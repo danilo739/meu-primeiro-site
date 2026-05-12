@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viralium Media</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Lora:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background: #fdfdfd; margin: 0; padding: 0; }
+        
+        /* Barra superior de navegação */
+        .nav-header { 
+            background: #0F172A; 
+            padding: 15px 0; 
+            text-align: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100;
+        }
+        .nav-header a { 
+            color: #C2A378; 
+            text-decoration: none; 
+            font-weight: bold; 
+            font-size: 13px; 
+            letter-spacing: 1px;
+        }
+
+        /* Container da Notícia */
+        .article-container { 
+            max-width: 850px; 
+            margin: 0 auto; 
+            background: white; 
+            min-height: 100vh;
+        }
+
+        /* Moldura da Foto - Sem cortes */
+        .photo-frame { 
+            width: 100%; 
+            background: #000; 
+            display: flex; 
+            justify-content: center;
+        }
+        .photo-frame img { 
+            max-width: 100%; 
+            height: auto; 
+            display: block; 
+        }
+
+        /* Conteúdo de Texto */
+        .article-content { 
+            padding: 50px 60px; 
+        }
+
+        .category-label { 
+            color: #C2A378; 
+            font-weight: 800; 
+            font-size: 12px; 
+            text-transform: uppercase; 
+            letter-spacing: 2px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        h1 { 
+            font-family: 'Lora', serif; 
+            font-size: 2.8rem; 
+            margin: 0 0 20px 0; 
+            color: #0F172A; 
+            line-height: 1.1; 
+        }
+
+        .date-author {
+            color: #94A3B8;
+            font-size: 14px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #F1F5F9;
+            padding-bottom: 20px;
+        }
+
+        .main-text { 
+            font-family: 'Lora', serif; 
+            font-size: 1.3rem; 
+            line-height: 1.9; 
+            color: #334155; 
+            white-space: pre-wrap; 
+            text-align: justify;
+        }
+
+        /* Responsividade para celular */
+        @media (max-width: 600px) {
+            .article-content { padding: 30px 20px; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav-header">
+        <a href="index.html">← VOLTAR PARA O VIRALIUM MEDIA</a>
+    </div>
+
+    <article class="article-container">
+        <div class="photo-frame">
+            <img id="capa" src="" alt="Imagem da notícia">
+        </div>
+
+        <div class="article-content">
+            <span class="category-label" id="categoria"></span>
+            <h1 id="titulo">Carregando...</h1>
+            <div class="date-author" id="data-pub"></div>
+            
+            <div class="main-text" id="texto"></div>
+        </div>
+    </article>
+
+    <script>
+        // Pega o ID da URL
+        const id = new URLSearchParams(window.location.search).get('id');
+
+        async function carregarNoticia() {
+            try {
+                const res = await fetch(`http://localhost:3000/api/noticias/${id}`);
+                const n = await res.json();
+                
+                document.title = n.titulo;
+                document.getElementById('titulo').innerText = n.titulo;
+                document.getElementById('categoria').innerText = n.categoria;
+                document.getElementById('texto').innerText = n.conteudo;
+                
+                // Formatação da data
+                const dataFormatada = new Date(n.data).toLocaleDateString('pt-BR', {
+                    day: '2-digit', month: 'long', year: 'numeric'
+                });
+                document.getElementById('data-pub').innerText = `Publicado em ${dataFormatada}`;
+
+                // Trata a imagem
+                if (n.capa) {
+                    document.getElementById('capa').src = `http://localhost:3000${n.capa}`;
+                } else {
+                    document.querySelector('.photo-frame').style.display = 'none';
+                }
+            } catch (err) {
+                document.getElementById('titulo').innerText = "Erro ao carregar notícia.";
+            }
+        }
+        
+        if (id) {
+            carregarNoticia();
+        } else {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+node_modules
+viralium.db
+uploads/*
+.DS_Store
+.env

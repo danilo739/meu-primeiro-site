@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viralium Media - O seu portal de notícias</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="header-top">
+            <span class="date-now" id="data-atual">DOMINGO, 10 DE MAIO</span>
+            <div class="logo">VIRALIUM <span>MEDIA</span></div>
+           
+        </div>
+        
+        <div class="search-container">
+            <input type="text" id="input-busca" placeholder="O que você está procurando hoje?">
+        </div>
+<div class="top-messagem">Viralium Media • Cobertura digital independente 24 horas</div>
+        <nav class="nav-scroll">
+            <div class="nav-container">
+                <button class="nav-btn active" onclick="filtrarCategoria('Tudo', this)">Início</button>
+                <button class="nav-btn" onclick="filtrarCategoria('Política', this)">Política</button>
+                <button class="nav-btn" onclick="filtrarCategoria('Economia', this)">Economia</button>
+                <button class="nav-btn" onclick="filtrarCategoria('Tecnologia', this)">Tecnologia</button>
+                <button class="nav-btn" onclick="filtrarCategoria('Cultura', this)">Cultura</button>
+                <button class="nav-btn" onclick="filtrarCategoria('Saúde', this)">Saúde</button>
+                <button class="nav-btn" onclick="filtrarCategoria('Outros', this)">Outros</button>
+                 
+            </div>
+        </nav>
+    </header>
+
+    <main class="feed-container">
+        <div id="destaque-principal">
+            <p style="text-align:center; color:#94A3B8; margin-top:50px;">Carregando notícias...</p>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="social-links">
+           
+        </div>
+        <p>© 2026 Viralium Media. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        // Atualiza a data no topo
+        const opcoes = { weekday: 'long', day: 'numeric', month: 'long' };
+        document.getElementById('data-atual').innerText = new Date().toLocaleDateString('pt-BR', opcoes).toUpperCase();
+    </script>
+</body>
+</html>
