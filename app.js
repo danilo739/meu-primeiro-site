@@ -1,99 +1,255 @@
 let categoriaAtual = "Tudo";
+let timeoutBusca;
 
 document.addEventListener('DOMContentLoaded', () => {
+
     carregarNoticias();
     carregarConfig();
+    ativarMonetizacao();
 
     const buscaInput = document.getElementById('input-busca');
-    if(buscaInput) {
-        buscaInput.addEventListener('input', (e) => carregarNoticias(e.target.value));
+
+    if (buscaInput) {
+
+        buscaInput.addEventListener('input', (e) => {
+
+            clearTimeout(timeoutBusca);
+
+            timeoutBusca = setTimeout(() => {
+                carregarNoticias(e.target.value.trim());
+            }, 400);
+
+        });
+
     }
+
 });
 
-async function filtrarCategoria(cat, btn) {
+function filtrarCategoria(cat, btn) {
+
     categoriaAtual = cat;
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+    document
+        .querySelectorAll('.nav-btn')
+        .forEach(b => b.classList.remove('active'));
+
     btn.classList.add('active');
+
     carregarNoticias();
 }
 
 async function carregarNoticias(busca = "") {
+
     const container = document.getElementById('destaque-principal');
+
+    mostrarLoading(container);
+
     try {
-        const res = await fetch(`http://localhost:3000/api/noticias?q=${busca}`);
+
+        const res = await fetch(
+            `/api/noticias?q=${encodeURIComponent(busca)}`
+        );
+
+        if (!res.ok) {
+            throw new Error('Erro na API');
+        }
+
         let noticias = await res.json();
 
         if (categoriaAtual !== "Tudo") {
-            noticias = noticias.filter(n => 
-                n.categoria.trim().toLowerCase() === categoriaAtual.trim().toLowerCase()
+
+            noticias = noticias.filter(n =>
+                n.categoria?.trim().toLowerCase() ===
+                categoriaAtual.trim().toLowerCase()
             );
+
         }
 
         if (noticias.length === 0) {
-            container.innerHTML = `<p style="text-align:center; color:#94A3B8; margin-top:50px;">Nenhuma notícia em ${categoriaAtual}.</p>`;
+
+            container.innerHTML = `
+                <div class="empty-state">
+                    Nenhuma notícia encontrada em ${escapeHTML(categoriaAtual)}.
+                </div>
+            `;
+
             return;
         }
 
         container.innerHTML = noticias.map((n, i) => {
-            // DESTAQUE PRINCIPAL (A primeira notícia)
+
+            const imgPath = n.capa || '';
+
+            // HERO
             if (i === 0 && busca === "") {
+
                 return `
-                <div class="hero-card" onclick="window.location.href='noticia.html?id=${n.id}'" style="cursor:pointer; display: block !important;">
-                    ${n.capa ? `<img src="http://localhost:3000${n.capa}" class="hero-img" style="width:100%; display:block;">` : ''}
-                    <div class="hero-content" style="padding: 20px; background: white;">
-                        <span class="tag" style="color: #C2A378; font-weight: 800; font-size: 11px;">${n.categoria.toUpperCase()}</span>
-                        <h2 style="margin: 10px 0 0 0; color: #0F172A; font-size: 1.8rem; display: block !important; visibility: visible !important;">
-                            ${n.titulo}
-                        </h2>
-                    </div>
-                </div>`;
+                    <article 
+                        class="hero-card"
+                        onclick="abrirNoticia(${n.id})"
+                    >
+
+                        ${imgPath ? `
+                            <img 
+                                src="${imgPath}"
+                                class="hero-img"
+                                alt="${escapeHTML(n.titulo)}"
+                                loading="lazy"
+                                onerror="this.style.display='none'"
+                            >
+                        ` : ''}
+
+                        <div class="hero-content">
+
+                            <span class="tag">
+                                ${escapeHTML(n.categoria.toUpperCase())}
+                            </span>
+
+                            <h2>
+                                ${escapeHTML(n.titulo)}
+                            </h2>
+
+                        </div>
+
+                    </article>
+                `;
             }
-            
-            // NOTÍCIAS MENORES
+
+            // CARDS
             return `
-            <article class="news-card-small" onclick="window.location.href='noticia.html?id=${n.id}'" style="cursor:pointer">
-                <div style="flex:1">
-                    <span class="tag">${n.categoria}</span>
-                    <h3 style="color: #0F172A;">${n.titulo}</h3>
-                </div>
-                ${n.capa ? `<img src="http://localhost:3000${n.capa}" style="width:70px;height:70px;object-fit:cover;border-radius:12px;margin-left:15px;">` : ''}
-            </article>`;
+                <article 
+                    class="news-card-small"
+                    onclick="abrirNoticia(${n.id})"
+                >
+
+                    <div class="news-info">
+
+                        <span class="tag">
+                            ${escapeHTML(n.categoria)}
+                        </span>
+
+                        <h3>
+                            ${escapeHTML(n.titulo)}
+                        </h3>
+
+                    </div>
+
+                    ${imgPath ? `
+                        <img 
+                            src="${imgPath}"
+                            class="thumb"
+                            alt="${escapeHTML(n.titulo)}"
+                            loading="lazy"
+                            onerror="this.style.display='none'"
+                        >
+                    ` : ''}
+
+                </article>
+            `;
+
         }).join('');
+
     } catch (e) {
-        container.innerHTML = "Erro ao carregar notícias.";
+
+        console.error(e);
+
+        container.innerHTML = `
+            <div class="error-state">
+                Erro ao carregar notícias.
+            </div>
+        `;
     }
 }
 
+function abrirNoticia(id) {
+    window.location.href = `noticia.html?id=${id}`;
+}
+
+function mostrarLoading(container) {
+
+    container.innerHTML = `
+        <div class="loading-state">
+            Carregando notícias...
+        </div>
+    `;
+}
+
 async function carregarConfig() {
+
     try {
-        const res = await fetch('http://localhost:3000/api/config');
+
+        const res = await fetch('/api/config/instagram');
+
+        if (!res.ok) return;
+
         const config = await res.json();
+
         const link = document.getElementById('link-instagram');
-        if(link && config.valor) link.href = config.valor;
-    } catch (e) {}
-}
-async function ativarMonetizacao() {
-    try {
-        const res = await fetch('http://localhost:3000/api/config/adsense');
-        const data = await res.json();
-        
-        if (data.valor && data.valor.trim() !== "") {
-            // Cria um elemento de script e injeta o código do AdSense
-            const scriptCont = document.createElement('div');
-            scriptCont.innerHTML = data.valor;
-            
-            // Injeta no final do body para não travar o carregamento do site
-            document.body.appendChild(scriptCont);
-            
-            // Se o script contiver tags <script>, precisamos executá-las manualmente
-            const scripts = scriptCont.getElementsByTagName('script');
-            for (let s of scripts) {
-                const novoScript = document.createElement('script');
-                if (s.src) novoScript.src = s.src;
-                if (s.innerHTML) novoScript.innerHTML = s.innerHTML;
-                document.head.appendChild(novoScript);
-            }
+
+        if (link && config.valor) {
+            link.href = config.valor;
         }
-    } catch (e) { console.log("Sem anúncios hoje."); }
+
+    } catch (e) {
+
+        console.log('Erro ao carregar configurações.');
+
+    }
 }
-ativarMonetizacao(); // Chama a função ao carregar a página
+
+async function ativarMonetizacao() {
+
+    try {
+
+        // Evita duplicar AdSense
+        if (window.adsenseCarregado) return;
+
+        const res = await fetch('/api/adsense');
+
+        if (!res.ok) return;
+
+        const data = await res.json();
+
+        if (!data.valor || data.valor.trim() === "") return;
+
+        window.adsenseCarregado = true;
+
+        const container = document.createElement('div');
+
+        container.innerHTML = data.valor;
+
+        document.body.appendChild(container);
+
+        const scripts = container.querySelectorAll('script');
+
+        scripts.forEach(oldScript => {
+
+            const novoScript = document.createElement('script');
+
+            if (oldScript.src) {
+                novoScript.src = oldScript.src;
+                novoScript.async = true;
+            }
+
+            novoScript.textContent = oldScript.textContent;
+
+            document.head.appendChild(novoScript);
+
+        });
+
+    } catch (e) {
+
+        console.log('Sem anúncios disponíveis.');
+
+    }
+}
+
+function escapeHTML(str = '') {
+
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
