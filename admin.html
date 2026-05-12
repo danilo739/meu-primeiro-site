@@ -47,6 +47,7 @@ body{
     padding:30px 20px;
     position:fixed;
     height:100vh;
+    display:none;
 }
 
 .logo{
@@ -59,50 +60,18 @@ body{
     color:var(--accent);
 }
 
-.menu{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-}
-
-.menu button{
-    width:100%;
-    background:transparent;
-    color:var(--muted);
-    border:none;
-    padding:15px;
-    border-radius:12px;
-    text-align:left;
-    font-size:0.95rem;
-    font-weight:600;
-    cursor:pointer;
-    transition:0.2s;
-}
-
-.menu button:hover{
-    background:var(--card);
-    color:white;
-}
-
-.menu button.active{
-    background:var(--accent);
-    color:white;
-}
-
 /* MAIN */
 
 .main{
     flex:1;
     margin-left:260px;
     padding:30px;
+    display:none;
 }
 
 /* TOPBAR */
 
 .topbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
     margin-bottom:30px;
 }
 
@@ -113,7 +82,6 @@ body{
 
 .topbar p{
     color:var(--muted);
-    margin-top:5px;
 }
 
 /* STATS */
@@ -132,11 +100,6 @@ body{
     padding:25px;
 }
 
-.stat-card h2{
-    font-size:2rem;
-    margin-top:10px;
-}
-
 /* PANEL */
 
 .panel{
@@ -145,10 +108,6 @@ body{
     border-radius:20px;
     padding:25px;
     margin-bottom:25px;
-}
-
-.panel h2{
-    margin-bottom:20px;
 }
 
 /* FORM */
@@ -184,7 +143,6 @@ select{
     border:1px solid var(--border);
     border-radius:12px;
     color:white;
-    font-size:0.95rem;
 }
 
 textarea{
@@ -209,10 +167,22 @@ select:focus{
     border-radius:12px;
     font-weight:700;
     cursor:pointer;
+    transition:0.2s;
+    width:100%;
+}
+
+.btn:hover{
+    opacity:0.9;
+}
+
+.btn:disabled{
+    opacity:0.6;
+    cursor:not-allowed;
 }
 
 .btn-danger{
     background:var(--danger);
+    width:auto;
 }
 
 .btn-gold{
@@ -224,7 +194,6 @@ select:focus{
 
 .preview{
     width:100%;
-    max-width:250px;
     height:150px;
     border-radius:15px;
     overflow:hidden;
@@ -244,12 +213,6 @@ select:focus{
 
 /* TABLE */
 
-.table{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-}
-
 .row{
     background:var(--card2);
     border:1px solid var(--border);
@@ -258,12 +221,8 @@ select:focus{
     display:flex;
     justify-content:space-between;
     align-items:center;
+    margin-bottom:10px;
     gap:15px;
-}
-
-.row span{
-    flex:1;
-    word-break:break-word;
 }
 
 /* LOGIN */
@@ -300,16 +259,8 @@ select:focus{
 
 @media(max-width:900px){
 
-    body{
-        flex-direction:column;
-    }
-
     .sidebar{
-        width:100%;
-        height:auto;
-        position:relative;
-        border-right:none;
-        border-bottom:1px solid var(--border);
+        display:none !important;
     }
 
     .main{
@@ -334,59 +285,14 @@ select:focus{
 <body>
 
 <!-- LOGIN -->
-<div id="admin-panel">
-    <hr style="margin:30px 0; border:none; border-top:1px solid #E2E8F0;">
 
-<div class="config-box">
-
-    <h2 style="
-        font-size:1.2rem;
-        margin-bottom:20px;
-        color:#0F172A;
-    ">
-        Configurações do Site
-    </h2>
-
-    <div class="form-group">
-
-        <label>
-            LINK DO INSTAGRAM
-        </label>
-
-        <input
-            type="url"
-            id="config-insta"
-            placeholder="https://instagram.com/seuperfil"
-        >
-
-    </div>
-
-    <button
-        onclick="salvarConfig()"
-        style="
-            background:#C2A378;
-            color:#0F172A;
-            width:100%;
-            border:none;
-            padding:14px;
-            border-radius:12px;
-            font-weight:800;
-            cursor:pointer;
-            margin-top:10px;
-        "
-    >
-        SALVAR CONFIGURAÇÕES
-    </button>
-
-</div>
-</div>
 <div id="login-screen">
 
     <div class="login-box">
 
         <h1>Viralium Admin</h1>
 
-        <p>Painel administrativo </p>
+        <p>Acesso restrito</p>
 
         <div class="form-group">
 
@@ -400,7 +306,10 @@ select:focus{
 
         </div>
 
-        <button class="btn" onclick="checkLogin()">
+        <button
+            class="btn"
+            onclick="checkLogin(event)"
+        >
             Entrar
         </button>
 
@@ -408,36 +317,31 @@ select:focus{
 
 </div>
 
-
 <!-- SIDEBAR -->
 
-<aside class="sidebar">
+<aside
+    class="sidebar"
+    id="sidebar"
+>
 
     <div class="logo">
         Viralium<span>.</span>
     </div>
 
-    
-
-
-
-       
-
 </aside>
 
 <!-- MAIN -->
 
-<main class="main">
+<main
+    class="main"
+    id="admin-panel"
+>
 
     <div class="topbar">
 
-        <div>
+        <h1>Painel Administrativo</h1>
 
-            <h1>Painel Administrativo</h1>
-
-            <p>Gerencie sua plataforma</p>
-
-        </div>
+        <p>Gerencie sua plataforma em tempo real</p>
 
     </div>
 
@@ -446,7 +350,7 @@ select:focus{
     <section class="stats">
 
         <div class="stat-card">
-            <p>Total Notícias</p>
+            <p>Notícias</p>
             <h2 id="stat-news">0</h2>
         </div>
 
@@ -457,16 +361,20 @@ select:focus{
 
         <div class="stat-card">
             <p>Status</p>
-            <h2 style="color:var(--success);">Online</h2>
+            <h2 style="color:var(--success);">
+                Online
+            </h2>
         </div>
 
     </section>
 
-    <!-- PUBLICAR -->
+    <!-- NOVA PUBLICAÇÃO -->
 
     <section class="panel">
 
-        <h2>Nova Publicação</h2>
+        <h2 style="margin-bottom:20px;">
+            Nova Publicação
+        </h2>
 
         <div class="form-grid">
 
@@ -487,12 +395,13 @@ select:focus{
                 <label>CATEGORIA</label>
 
                 <select id="categoria">
+
                     <option>TECNOLOGIA</option>
                     <option>POLÍTICA</option>
                     <option>ECONOMIA</option>
                     <option>SAÚDE</option>
                     <option>CULTURA</option>
-                    <option>OUTROS</option>
+
                 </select>
 
             </div>
@@ -508,10 +417,13 @@ select:focus{
                     onchange="previewImage(this)"
                 >
 
-            </div>
+                <div
+                    class="preview"
+                    id="preview-capa"
+                >
+                    Preview
+                </div>
 
-            <div class="preview" id="preview-capa">
-                Preview
             </div>
 
             <div class="form-group full">
@@ -520,34 +432,64 @@ select:focus{
 
                 <textarea
                     id="conteudo"
-                    placeholder="Escreva a notícia..."
+                    placeholder="Escreva aqui..."
                 ></textarea>
 
             </div>
 
         </div>
 
-        <button class="btn" onclick="enviarNoticia()">
+        <button
+            class="btn"
+            id="btn-publicar"
+            onclick="enviarNoticia()"
+        >
             Publicar Notícia
         </button>
 
-        <p id="msg-status" style="margin-top:15px;"></p>
+        <p
+            id="msg-status"
+            style="margin-top:15px;"
+        ></p>
 
     </section>
 
-    <!-- ADSENSE -->
+    <!-- CONFIG -->
 
     <section class="panel">
 
-        <h2>Google AdSense</h2>
+        <h2 style="margin-bottom:20px;">
+            Configurações Gerais
+        </h2>
 
         <div class="form-group">
 
-            <label>CÓDIGO</label>
+            <label>LINK DO INSTAGRAM</label>
+
+            <input
+                type="url"
+                id="config-insta"
+                placeholder="https://instagram.com/seu-perfil"
+            >
+
+        </div>
+
+        <button
+            class="btn btn-gold"
+            onclick="salvarConfig()"
+        >
+            Salvar Instagram
+        </button>
+
+        <div
+            class="form-group"
+            style="margin-top:25px;"
+        >
+
+            <label>GOOGLE ADSENSE</label>
 
             <textarea
                 id="adsense-code"
-                placeholder="Cole o código do AdSense"
                 style="min-height:120px;"
             ></textarea>
 
@@ -566,12 +508,11 @@ select:focus{
 
     <section class="panel">
 
-        <h2>Gerenciar Notícias</h2>
+        <h2 style="margin-bottom:20px;">
+            Gerenciar Notícias
+        </h2>
 
-        <div
-            class="table"
-            id="lista-noticias-delete"
-        ></div>
+        <div id="lista-noticias-delete"></div>
 
     </section>
 
@@ -579,12 +520,11 @@ select:focus{
 
     <section class="panel">
 
-        <h2>Comentários</h2>
+        <h2 style="margin-bottom:20px;">
+            Comentários
+        </h2>
 
-        <div
-            class="table"
-            id="lista-comentarios-delete"
-        ></div>
+        <div id="lista-comentarios-delete"></div>
 
     </section>
 
@@ -594,17 +534,7 @@ select:focus{
 
 /* LOGIN */
 
-/* LOGIN */
-
-window.onload = function(){
-
-    document.getElementById(
-        'login-screen'
-    ).style.display = 'flex';
-
-};
-
-async function checkLogin(){
+async function checkLogin(event){
 
     const senha =
     document.getElementById(
@@ -613,38 +543,54 @@ async function checkLogin(){
 
     if(!senha){
 
-        return alert("Digite uma senha");
+        alert("Digite a senha");
+
+        return;
 
     }
+
+    const btn = event.target;
+
+    btn.disabled = true;
+
+    btn.innerText = "Entrando...";
 
     try{
 
         const response =
-        await fetch(
-            'http://localhost:3000/api/login',
-            {
-                method:'POST',
+        await fetch('/api/login',{
 
-                headers:{
-                    'Content-Type':'application/json'
-                },
+            method:'POST',
 
-                body:JSON.stringify({
-                    senha
-                })
+            headers:{
+                'Content-Type':'application/json'
+            },
 
-            }
-        );
+            body:JSON.stringify({
+                senha
+            })
+
+        });
 
         if(response.ok){
 
-            abrirPainel();
+            document.getElementById(
+                'login-screen'
+            ).style.display = 'none';
 
-            carregarGerenciamento();
+            document.getElementById(
+                'admin-panel'
+            ).style.display = 'block';
+
+            document.getElementById(
+                'sidebar'
+            ).style.display = 'block';
+
+            carregarDadosIniciais();
 
         }else{
 
-            alert("Senha incorreta!");
+            alert("Senha incorreta");
 
         }
 
@@ -652,83 +598,59 @@ async function checkLogin(){
 
         console.error(error);
 
-        alert(
-            "Servidor offline"
-        );
+        alert("Servidor offline");
 
     }
 
-}
+    btn.disabled = false;
 
-function abrirPainel(){
-
-    document.getElementById(
-        'login-screen'
-    ).style.display = 'none';
-
-    carregarAdsenseSalvo();
+    btn.innerText = "Entrar";
 
 }
 
-/* ADSENSE */
+/* CARREGAR */
 
-async function carregarAdsenseSalvo(){
+async function carregarDadosIniciais(){
+
+    carregarGerenciamento();
 
     try{
 
-        const res =
-        await fetch(
-            'http://localhost:3000/api/adsense'
-        );
+        const resAd =
+        await fetch('/api/adsense');
 
-        const data =
-        await res.json();
+        if(resAd.ok){
 
-        if(data.valor){
+            const dataAd =
+            await resAd.json();
 
             document.getElementById(
                 'adsense-code'
-            ).value = data.valor;
+            ).value =
+            dataAd.valor || '';
 
         }
 
-    }catch(e){
+    }catch(error){
 
-        console.error(e);
+        console.error(error);
 
     }
 
-}
-
-async function salvarAdsense(){
-
-    const codigo =
-    document.getElementById(
-        'adsense-code'
-    ).value;
-
     try{
 
-        const response =
-        await fetch(
-            'http://localhost:3000/api/adsense',
-            {
-                method:'POST',
+        const resConfig =
+        await fetch('/api/config/instagram');
 
-                headers:{
-                    'Content-Type':'application/json'
-                },
+        if(resConfig.ok){
 
-                body:JSON.stringify({
-                    codigoAdsense:codigo
-                })
+            const dataConfig =
+            await resConfig.json();
 
-            }
-        );
-
-        if(response.ok){
-
-            alert("AdSense salvo");
+            document.getElementById(
+                'config-insta'
+            ).value =
+            dataConfig.valor || '';
 
         }
 
@@ -749,11 +671,13 @@ function previewImage(input){
         'preview-capa'
     );
 
-    const file = input.files[0];
+    const file =
+    input.files[0];
 
     if(file){
 
-        const reader = new FileReader();
+        const reader =
+        new FileReader();
 
         reader.onload = function(e){
 
@@ -773,51 +697,71 @@ function previewImage(input){
 async function enviarNoticia(){
 
     const status =
-    document.getElementById('msg-status');
+    document.getElementById(
+        'msg-status'
+    );
+
+    const btn =
+    document.getElementById(
+        'btn-publicar'
+    );
+
+    btn.disabled = true;
+
+    btn.innerText = "Publicando...";
 
     const formData =
     new FormData();
 
     formData.append(
         'titulo',
-        document.getElementById('titulo').value
+        document.getElementById(
+            'titulo'
+        ).value
     );
 
     formData.append(
         'categoria',
-        document.getElementById('categoria').value
+        document.getElementById(
+            'categoria'
+        ).value
     );
 
     formData.append(
         'conteudo',
-        document.getElementById('conteudo').value
+        document.getElementById(
+            'conteudo'
+        ).value
     );
 
-    formData.append(
-        'capa',
-        document.getElementById('imagem-capa').files[0]
-    );
+    const imagem =
+    document.getElementById(
+        'imagem-capa'
+    ).files[0];
 
-    status.innerText = "Publicando...";
+    if(imagem){
+
+        formData.append(
+            'capa',
+            imagem
+        );
+
+    }
 
     try{
 
         const response =
-        await fetch(
-            'http://localhost:3000/api/noticias',
-            {
-                method:'POST',
-                body:formData
-            }
-        );
+        await fetch('/api/noticias',{
 
-        const result =
-        await response.json();
+            method:'POST',
+            body:formData
 
-        if(result.success){
+        });
+
+        if(response.ok){
 
             status.innerText =
-            "✅ Publicado";
+            "✅ Publicado com sucesso";
 
             status.style.color =
             "#10B981";
@@ -827,7 +771,7 @@ async function enviarNoticia(){
         }else{
 
             status.innerText =
-            "❌ Erro";
+            "❌ Erro ao publicar";
 
         }
 
@@ -840,78 +784,104 @@ async function enviarNoticia(){
 
     }
 
+    btn.disabled = false;
+
+    btn.innerText = "Publicar Notícia";
+
 }
 
-/* GERENCIAMENTO */
+/* CONFIG */
+
 async function salvarConfig(){
 
-    const linkInsta =
+    const valor =
     document.getElementById(
         'config-insta'
     ).value;
 
     try{
 
-        const response =
-        await fetch(
-            'http://localhost:3000/api/config',
-            {
+        await fetch('/api/config',{
 
-                method:'POST',
+            method:'POST',
 
-                headers:{
-                    'Content-Type':'application/json'
-                },
+            headers:{
+                'Content-Type':'application/json'
+            },
 
-                body:JSON.stringify({
+            body:JSON.stringify({
 
-                    link_insta:linkInsta
+                chave:'instagram',
+                valor
 
-                })
+            })
 
-            }
-        );
+        });
 
-        if(response.ok){
-
-            alert(
-                "Instagram atualizado!"
-            );
-
-        }
+        alert("Instagram salvo");
 
     }catch(error){
 
         console.error(error);
 
-        alert(
-            "Erro ao salvar"
-        );
+    }
+
+}
+
+async function salvarAdsense(){
+
+    const codigoAdsense =
+    document.getElementById(
+        'adsense-code'
+    ).value;
+
+    try{
+
+        await fetch('/api/adsense',{
+
+            method:'POST',
+
+            headers:{
+                'Content-Type':'application/json'
+            },
+
+            body:JSON.stringify({
+                codigoAdsense
+            })
+
+        });
+
+        alert("AdSense salvo");
+
+    }catch(error){
+
+        console.error(error);
 
     }
 
 }
 
+/* GERENCIAMENTO */
 
 async function carregarGerenciamento(){
 
     try{
 
         const resNoticias =
-        await fetch(
-            'http://localhost:3000/api/noticias'
-        );
+        await fetch('/api/noticias');
 
         const noticias =
         await resNoticias.json();
 
         document.getElementById(
             'stat-news'
-        ).innerText = noticias.length;
+        ).innerText =
+        noticias.length;
 
         document.getElementById(
             'lista-noticias-delete'
-        ).innerHTML = noticias.map(n => `
+        ).innerHTML =
+        noticias.map(n => `
 
             <div class="row">
 
@@ -931,13 +901,19 @@ async function carregarGerenciamento(){
 
         `).join('');
 
-        const resComent =
-        await fetch(
-            'http://localhost:3000/api/comentarios'
-        );
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+    try{
+
+        const resComentarios =
+        await fetch('/api/comentarios');
 
         const comentarios =
-        await resComent.json();
+        await resComentarios.json();
 
         document.getElementById(
             'stat-comments'
@@ -946,7 +922,8 @@ async function carregarGerenciamento(){
 
         document.getElementById(
             'lista-comentarios-delete'
-        ).innerHTML = comentarios.map(c => `
+        ).innerHTML =
+        comentarios.map(c => `
 
             <div class="row">
 
@@ -984,29 +961,24 @@ async function carregarGerenciamento(){
 
 async function excluirItem(tipo,id){
 
-    if(confirm(`Excluir ${tipo}?`)){
+    if(!confirm(
+        "Excluir permanentemente?"
+    )) return;
 
-        try{
+    try{
 
-            const response =
-            await fetch(
-                `http://localhost:3000/api/${tipo}/${id}`,
-                {
-                    method:'DELETE'
-                }
-            );
-
-            if(response.ok){
-
-                carregarGerenciamento();
-
+        await fetch(
+            `/api/${tipo}/${id}`,
+            {
+                method:'DELETE'
             }
+        );
 
-        }catch(error){
+        carregarGerenciamento();
 
-            console.error(error);
+    }catch(error){
 
-        }
+        console.error(error);
 
     }
 
